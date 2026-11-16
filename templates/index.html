@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T.A.N.T.R.A. | FIELD COMMAND</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div id="gateway-zone" style="display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0; z-index: 50; background: var(--bg-base);">
+        <div class="glass-panel" style="width: 400px; text-align: center; padding: 40px;">
+            <h1 style="font-size: 2.8rem; letter-spacing: 4px; margin-bottom: 5px;">TAN<span style="color: var(--accent-cyan);">TRA</span></h1>
+            <h2 style="color: var(--text-secondary); font-size: 1rem; letter-spacing: 3px; margin-bottom: 30px;">FIELD UPLINK</h2>
+            
+            <input type="text" id="callsign" placeholder="OPERATIVE DESIGNATION..." autocomplete="off">
+            <input type="password" id="master-key" placeholder="COMSEC KEY...">
+            <button id="btn-login" class="action-btn" style="margin-top: 10px;">SECURE UPLINK</button>
+        </div>
+    </div>
+
+    <div id="command-zone" class="hidden-zone">
+        
+        <nav class="mil-nav">
+            <div class="brand">TAN<span>TRA</span></div>
+            <div class="mono-text" style="color: var(--accent-cyan); letter-spacing: 2px;">"बहुजन हिताय बहुजन सुखाय"</div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <span id="nav-callsign" class="mono-text status-green">OP: SECURE</span>
+                <button id="btn-stealth" class="action-btn" style="padding: 8px 16px; background: transparent; border: 1px solid var(--text-secondary); color: var(--text-secondary); width: auto; font-size: 0.8rem;">STEALTH MODE</button>
+                <button id="btn-wipeout" class="danger-btn">ZEROIZE (BURN)</button>
+            </div>
+        </nav>
+
+        <div class="glass-panel" style="display: flex; flex-direction: column; gap: 15px;">
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h4 style="color: var(--text-secondary); font-size: 0.9rem;">SYS_DIAGNOSTICS</h4>
+                    <span class="status-green mono-text" style="font-size: 0.7rem; letter-spacing: 1px; animation: blink 2s infinite;">● SECURE</span>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                    <div>
+                        <span style="font-size: 0.7rem; color: var(--text-secondary); letter-spacing: 1px;">NODE TIME</span><br>
+                        <span id="sys-time" class="mono-text status-cyan" style="font-size: 1.1rem;">--:--:--</span>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.7rem; color: var(--text-secondary); letter-spacing: 1px;">UPTIME</span><br>
+                        <span id="sys-uptime" class="mono-text status-cyan" style="font-size: 1.1rem;">00:00:00</span>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.7rem; color: var(--text-secondary); letter-spacing: 1px;">MESH PING</span><br>
+                        <span id="sys-ping" class="mono-text status-green" style="font-size: 1.1rem;">-- ms</span>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.7rem; color: var(--text-secondary); letter-spacing: 1px;">ACTIVE NODES</span><br>
+                        <span id="sys-nodes" class="mono-text status-orange" style="font-size: 1.1rem;">1</span>
+                    </div>
+                </div>
+
+                <div style="padding-top: 10px; border-top: 1px dashed var(--panel-border);">
+                    <p class="mono-text" style="font-size: 0.85rem; display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-secondary);">COMSEC:</span> 
+                        <span class="status-green">AES-256-GCM ACTIVE</span>
+                    </p>
+                </div>
+            </div>
+            
+            <hr style="border-color: var(--panel-border); margin: 5px 0;">
+            
+            <div style="flex-grow: 1; display: flex; flex-direction: column;">
+                <h4 style="color: var(--text-secondary); margin-bottom: 10px; font-size: 0.9rem;">ENCRYPTED TELEMETRY</h4>
+                <div id="chat-display" class="scrollable-area mono-text" style="background: rgba(0,0,0,0.4); border-radius: 6px; padding: 15px; margin-bottom: 15px; flex-grow: 1;"></div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="chat-input" placeholder="ENTER PAYLOAD..." autocomplete="off" style="margin-bottom: 0; flex-grow: 1;">
+                    <button id="btn-send" class="action-btn" style="width: 70px;">Tx</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <div class="glass-panel" style="flex: 1.5; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 15px;">
+                    <h4 style="color: var(--accent-cyan); font-size: 0.9rem;">ACTIVE MESH TOPOLOGY</h4>
+                </div>
+                <div id="network-graph" style="flex-grow: 1; display: flex; justify-content: center; align-items: center; border: 1px dashed rgba(56, 189, 248, 0.3); border-radius: 8px;">
+                    <p class="mono-text" style="color: var(--text-secondary); opacity: 0.5;">[ MANET VISUALIZER STANDBY ]</p>
+                </div>
+            </div>
+
+            <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column;">
+                <div style="border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 15px;">
+                    <h4 style="color: var(--accent-cyan); font-size: 0.9rem;">COVERT ASSETS (STEGO)</h4>
+                </div>
+                <div style="display: flex; gap: 20px; flex-grow: 1;">
+                    
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                        <span style="font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 1px;">ENCODE MISSION DATA</span>
+                        <input type="file" id="stego-image-encode" accept="image/png" style="font-size: 0.8rem; padding: 8px;">
+                        <textarea id="stego-text" placeholder="SECRET DIRECTIVE..." style="flex-grow: 1; margin-bottom: 0; resize: none;"></textarea>
+                        <button id="btn-stego-encode" class="action-btn" style="padding: 10px; font-size: 0.85rem;">ENCODE & HIDE</button>
+                    </div>
+
+                    <div style="width: 1px; background: var(--panel-border);"></div>
+                    
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                        <span style="font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 1px;">DECODE ENEMY ASSET</span>
+                        <input type="file" id="stego-image-decode" accept="image/png" style="font-size: 0.8rem; padding: 8px;">
+                        <button id="btn-stego-decode" class="action-btn" style="background: transparent; border: 1px solid var(--accent-orange); color: var(--accent-orange); padding: 10px; font-size: 0.85rem;">DECRYPT PAYLOAD</button>
+                        <textarea id="stego-output" placeholder="EXTRACTED PAYLOAD WILL APPEAR HERE..." readonly style="flex-grow: 1; margin-bottom: 0; resize: none; background: rgba(0,0,0,0.2);"></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-panel" style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <div style="height: 35%; display: flex; flex-direction: column;">
+                <h4 style="color: var(--accent-orange); margin-bottom: 10px; font-size: 0.9rem;">THREAT_INTEL</h4>
+                <div id="threat-log" class="scrollable-area mono-text" style="font-size: 0.85rem; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 6px; flex-grow: 1;">
+                    <p>> <span class="status-cyan">[SYS] T.A.N.T.R.A. INITIALIZED</span></p>
+                </div>
+            </div>
+
+            <hr style="border-color: var(--panel-border);">
+
+            <div style="height: 65%; display: flex; flex-direction: column;">
+                <h4 style="color: var(--text-secondary); margin-bottom: 10px; font-size: 0.9rem;">DISTRIBUTED TACTICAL LEDGER</h4>
+                <div id="blockchain-visualizer" class="scrollable-area" style="display: flex; flex-direction: column; gap: 12px; padding-right: 5px;">
+                    </div>
+            </div>
+
+        </div>
+
+    </div>
+
+  <!-- 1. Offline Libraries MUST load first -->
+    <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='d3.v7.min.js') }}"></script>
+    
+    <!-- 2. Custom script MUST load last -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
